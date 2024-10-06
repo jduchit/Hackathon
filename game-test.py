@@ -136,7 +136,6 @@ def create_temperature_overlay(temperature, min_temp, max_temp):
     overlay.fill((r, 0, b, 100))  # Semi-transparent overlay
     return overlay
 
-
 def set_face(face_image):
     face_image = pygame.transform.scale(face_image, (37 * 1.2, 37 * 1.2))
     return face_image
@@ -184,7 +183,9 @@ class Button:
 class Slider:
     def __init__(self, x, y, width, min_value, max_value, initial_value):
         self.rect = pygame.Rect(x, y, width, 10)
-        self.handle = pygame.Rect(x + (initial_value - min_value) / (max_value - min_value) * width - 10, y - 5, 20, 20)
+        initial_value = max(min_value, min(initial_value, max_value))
+        handle_x = x + (initial_value - min_value) / (max_value - min_value) * width - 10
+        self.handle = pygame.Rect(handle_x, y - 5, 20, 20)
         self.min_value = min_value
         self.max_value = max_value
         self.value = initial_value
@@ -200,12 +201,13 @@ class Slider:
                 self.dragging = True
         if self.dragging:
             x_pos = max(self.rect.left, min(mouse_pos[0], self.rect.right))
-            self.handle.x = x_pos - 10
-            self.value = self.min_value + (self.handle.x - self.rect.x) / self.rect.width * (self.max_value - self.min_value)
+            self.handle.x = x_pos - self.handle.width // 2
+            self.value = self.min_value + (self.handle.x - self.rect.x + self.handle.width // 2) / self.rect.width * (self.max_value - self.min_value)
+            self.value = max(self.min_value, min(self.value, self.max_value))
         if not mouse_pressed[0]:
             self.dragging = False
 
-# Create sliders
+# Create sliders with proper limits
 radius_slider = Slider(600 + dif_x, 60 + dif_y, 120, 1, 17, 10)
 density_slider = Slider(600 + dif_x, 140 + dif_y, 120, 0.30, 28, 5)
 temperature_slider = Slider(600 + dif_x, 220 + dif_y, 120, -67, 2456, 1000)
@@ -228,6 +230,8 @@ y_position_meters = 0  # Starting at ground level
 y_velocity = 0  # m/s
 G = 6.67430e-11  # Gravitational constant in m^3 kg^-1 s^-2
 initial_jump_velocity = 5  # m/s, adjust as needed
+
+jump_message = ""  # Initialize jump message
 
 # Main game loop
 running = True
@@ -267,6 +271,7 @@ while running:
                     is_jumping = False
                     y_position_meters = 0
                     y_velocity = 0
+                    jump_message = ""
                 elif take_screenshoot_button.is_clicked(mouse_pos):
                     print(radius_slider.value, density_slider.value, temperature_slider.value)
             elif current_state == LANGUAGE_SCREEN:
@@ -340,6 +345,13 @@ while running:
         screen.blit(radius_text, (625 + dif_x, 80 + dif_y))
         screen.blit(density_text, (625 + dif_x, 160 + dif_y))
         screen.blit(temperature_text, (625 + dif_x, 240 + dif_y))
+
+        # Display jump message
+        if jump_message:
+            font = pygame.font.Font(None, 24)
+            message_surface = font.render(jump_message, True, WHITE)
+            message_rect = message_surface.get_rect(center=(screen_width // 2, 100))
+            screen.blit(message_surface, message_rect)
 
         # Draw return button
         return_button.draw(screen)
