@@ -214,16 +214,17 @@ def download_postal():
         # Generar la imagen del lado trasero
         back_surf = pygame.Surface((POSTCARD_WIDTH, POSTCARD_HEIGHT))
         back_surf.blit(background_image, (0, 0))
-        pygame.draw.line(back_surf, BLACK, (POSTCARD_WIDTH // 2, 0), (POSTCARD_WIDTH // 2, POSTCARD_HEIGHT), 5)
         
-        left_lines = wrap_text(left_message, default_font, POSTCARD_WIDTH // 2 - 40)
+        # Lado izquierdo: Usar la misma fuente y renderizado que en la vista interactiva, con ajustes de altura
+        left_lines = wrap_text(left_message, custom_font2, POSTCARD_WIDTH // 2 - 40)
         right_lines = wrap_text(user_input, custom_font, POSTCARD_WIDTH // 2 - 40)
         
-        left_start_y = 50
+        left_start_y = POSTCARD_RECT.y + 50  # Ajusta la altura para que coincida
         for i, line in enumerate(left_lines):
-            default_font.render_to(back_surf, (20, left_start_y + i * 40), line, BLACK)
+            custom_font2.render_to(back_surf, (50, left_start_y + i * 40), line, BLACK)
         
-        right_start_y = POSTCARD_HEIGHT // 2 + 20
+        # Lado derecho: Ajustar la altura del texto
+        right_start_y = POSTCARD_RECT.y + POSTCARD_HEIGHT // 2 + 20
         for i, line in enumerate(right_lines):
             custom_font.render_to(back_surf, (POSTCARD_WIDTH // 2 + 20, right_start_y + i * 40), line, BLACK)
 
@@ -234,6 +235,7 @@ def download_postal():
         
         # Guardar la imagen final
         img.save(file_path)
+        messagebox.showinfo("Postal guardada", "La postal interactiva ha sido guardada con éxito.")
 
 # Función principal para la postal interactiva
 def postcard():
