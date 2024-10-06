@@ -93,8 +93,11 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('ExoAdventure')
 clock = pygame.time.Clock()
 
+# Get the directory of the current script
+current_dir = os.path.dirname(__file__)
+
 # Load background image
-background_image = pygame.image.load('resources/background/new_background.jpeg')
+background_image = pygame.image.load(current_dir + '\\resources\\background\\new_background.jpeg')
 background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
 
 # Colors
@@ -104,12 +107,12 @@ GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 
 # Load flag images (assuming they are stored in the same directory as the script)
-english_flag = pygame.image.load('resources/flags/Flag_of_United_States-128x67.png')
-spanish_flag = pygame.image.load('resources/flags/Flag_of_Spain-128x85.png')
-french_flag = pygame.image.load('resources/flags/Flag_of_France-128x85.png')
-german_flag = pygame.image.load('resources/flags/Flag_of_Germany-128x77.png')
-hindi_flag = pygame.image.load('resources/flags/Flag_of_India-128x85.png')
-japanese_flag = pygame.image.load('resources/flags/Flag_of_Japan-128x85.png')
+english_flag = pygame.image.load(current_dir + '\\resources\\flags\\Flag_of_United_States-128x67.png')
+spanish_flag = pygame.image.load(current_dir + '\\resources\\flags\\Flag_of_Spain-128x85.png')
+french_flag = pygame.image.load(current_dir + '\\resources\\flags\\Flag_of_France-128x85.png')
+german_flag = pygame.image.load(current_dir + '\\resources\\flags\\Flag_of_Germany-128x77.png')
+hindi_flag = pygame.image.load(current_dir + '\\resources\\flags\\Flag_of_India-128x85.png')
+japanese_flag = pygame.image.load(current_dir + '\\resources\\flags\\Flag_of_Japan-128x85.png')
 
 # Adjust size of the flags if necessary
 flag_size = (50, 30)  # Example size
@@ -157,19 +160,19 @@ def capture_new_face_image():
 
 # Load or capture face image
 def load_face_image():
-    if not os.path.exists('resources/character/cropped_face_with_transparent_bg.png'):
+    if not os.path.exists(current_dir + '\\resources\\character\\cropped_face_with_transparent_bg.png'):
         print("Face image not found. Capturing new image...")
         if not capture_new_face_image():
             print("Failed to capture new image. Using default.")
             return None
-    return 'resources/character/cropped_face_with_transparent_bg.png'
+    return current_dir + '\\resources\\character\\cropped_face_with_transparent_bg.png'
 
 # Load face image
 face_image = pygame.image.load(load_face_image())
 face_image = set_face(face_image)
 
 # Load player image
-player_image = pygame.image.load('resources/character/astronaut.png')
+player_image = pygame.image.load(current_dir + '\\resources\\character\\astronaut.png')
 player_image = pygame.transform.scale(player_image, (170*1.5, 170*1.5))
 
 # Button class
