@@ -8,8 +8,12 @@ import math
 
 # Inicializar pygame y tkinter
 pygame.init()
+pygame.mixer.init()  # Inicializar el módulo de sonido
 root = tk.Tk()
 root.withdraw()  # Ocultar la ventana principal de tkinter
+
+# Cargar el sonido flip
+flip_sound = pygame.mixer.Sound('C:/Users/Johana/Downloads/flip.wav')
 
 # Dimensiones de la ventana y la postal
 SCREEN_WIDTH = 1100
@@ -190,6 +194,7 @@ def display_download_button(mouse_pos):
 # Función para alternar entre frente y reverso de la postal
 def flip_postal():
     global postal_front
+    pygame.mixer.Sound.play(flip_sound)  # Reproducir el sonido al voltear
     postal_front = not postal_front
 
 # Función para guardar la postal
