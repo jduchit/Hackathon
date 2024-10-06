@@ -152,19 +152,34 @@ def display_front():
     pygame.draw.rect(screen, LIGHTBLUE, POSTCARD_RECT)
     default_font.render_to(screen, (POSTCARD_RECT.x + POSTCARD_RECT.width // 2 - 100, POSTCARD_RECT.y + POSTCARD_RECT.height // 2 - 18), "Front Side", BLACK)
 
+# Función para renderizar el mensaje predeterminado en el lado izquierdo de la postal
+def draw_default_left_message(surface, font, start_x, start_y, max_width):
+    default_message = "Your preset message on the left side"
+    lines = wrap_text(default_message, font, max_width)
+    for i, line in enumerate(lines):
+        font.render_to(surface, (start_x, start_y + i * 40), line, BLACK)
+
+# Función para renderizar el mensaje personalizado en el lado derecho de la postal
+def draw_custom_right_message(surface, font, start_x, start_y, max_width):
+    lines = wrap_text(user_input, font, max_width)
+    for i, line in enumerate(lines):
+        font.render_to(surface, (start_x, start_y + i * 40), line, BLACK)
+
 # Función para mostrar la parte trasera de la postal
 def display_back():
     screen.blit(background_image, (POSTCARD_RECT.x, POSTCARD_RECT.y))
+
     left_area_width = POSTCARD_WIDTH // 2 - 40
     right_area_width = POSTCARD_WIDTH // 2 - 40
-    left_lines = wrap_text(left_message, custom_font2, left_area_width)
-    right_lines = wrap_text(user_input, custom_font, right_area_width)
+
     left_start_y = POSTCARD_RECT.y + 50
-    for i, line in enumerate(left_lines):
-        custom_font2.render_to(screen, (POSTCARD_RECT.x + 50, left_start_y + i * 40), line, BLACK)
     right_start_y = POSTCARD_RECT.y + POSTCARD_HEIGHT // 2 + 20
-    for i, line in enumerate(right_lines):
-        custom_font.render_to(screen, (POSTCARD_RECT.x + POSTCARD_WIDTH // 2 + 20, right_start_y + i * 40), line, BLACK)
+
+    # Llamar a la función específica para poner el mensaje predeterminado en el lado izquierdo
+    draw_default_left_message(screen, custom_font2, POSTCARD_RECT.x + 50, left_start_y, left_area_width)
+
+    # Renderizar el lado derecho (mensaje personalizado)
+    draw_custom_right_message(screen, custom_font, POSTCARD_RECT.x + POSTCARD_WIDTH // 2 + 20, right_start_y, right_area_width)
 
 # Función para mostrar el cuadro de texto
 def display_text_box():
