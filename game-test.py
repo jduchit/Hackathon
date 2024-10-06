@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import camera
 import cropface
+from Data import model
 
 
 # Initialize Pygame
@@ -26,7 +27,8 @@ translations = {
         "Radius": "Radius",
         "Density": "Density",
         "Temperature": "Temperature",
-        "Take Screenshoot": "Take Screenshoot"
+        "Take Screenshoot": "Create Postcard",
+        "Get Planet": "Get Planet"
     },
     "Spanish": {
         "English": "Inglés",
@@ -43,7 +45,8 @@ translations = {
         "Radius": "Radio",
         "Density": "Densidad",
         "Temperature": "Temperatura",
-        "Take Screenshoot": "Tomar Captura de Pantalla"
+        "Take Screenshoot": "Crear Postal",
+        "Get Planet": "Obtener Planeta"
     },
     "French": {
         "English": "Anglais",
@@ -60,7 +63,8 @@ translations = {
         "Radius": "Rayon",
         "Density": "Densité",
         "Temperature": "Température",
-        "Take Screenshoot": "Prendre une Capture d'Écran"
+        "Take Screenshoot": "Créer une Carte Postale",
+        "Get Planet": "Obtenir Planète"
     },
     "German": {
         "English": "Englisch",
@@ -77,7 +81,8 @@ translations = {
         "Radius": "Radius",
         "Density": "Dichte",
         "Temperature": "Temperatur",
-        "Take Screenshoot": "Screenshot aufnehmen"
+        "Take Screenshoot": "Postkarte erstellen",
+        "Get Planet": "Planet erhalten"
     }
 }
 
@@ -251,7 +256,8 @@ while running:
     quit_button = Button(translations[current_language]["Quit"], 300 + dif_x, 400 + dif_y, 200, 50)
     return_button = Button(translations[current_language]["Return"], 10 + dif_x, 10 + dif_y, 100, 40)
     take_image_button = Button(translations[current_language]["Take New Image"], 150 + dif_x, 500 + dif_y, 500, 50)
-    take_screenshoot_button = Button(translations[current_language]["Take Screenshoot"], 150 + dif_x, 600 + dif_y, 500, 50)
+    take_screenshoot_button = Button(translations[current_language]["Take Screenshoot"], 450 + dif_x, 600 + dif_y, 500, 50)
+    get_planet_button = Button(translations[current_language]["Get Planet"], -150 + dif_x, 600 + dif_y, 500, 50)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -278,8 +284,12 @@ while running:
                     is_jumping = False
                     y_position = screen_height - 120
                     y_velocity = 0
-                elif take_screenshoot_button.is_clicked(mouse_pos):
+                elif get_planet_button.is_clicked(mouse_pos):
                     print(radius_slider.value, density_slider.value, temperature_slider.value)
+                    planet_name = model.getPlanet(radius_slider.value, density_slider.value, temperature_slider.value, current_language.lower())
+                    planet_name = planet_name.replace(" ", "")
+                    background_image = pygame.image.load(current_dir + f'\\resources\\planetAI\\{planet_name}.jpg')
+                    background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
             elif current_state == LANGUAGE_SCREEN:
                 if return_button.is_clicked(mouse_pos):
                     current_state = HOME_SCREEN
@@ -346,6 +356,7 @@ while running:
         # Draw return button
         return_button.draw(screen)
         take_screenshoot_button.draw(screen)
+        get_planet_button.draw(screen)
     elif current_state == LANGUAGE_SCREEN:
         english_button = Button(translations[current_language]["English"], 100 + dif_x, 200 + dif_y, 250, 50)
         spanish_button = Button(translations[current_language]["Spanish"], 100 + dif_x, 300 + dif_y, 250, 50)
