@@ -91,9 +91,9 @@ def center_elements():
     POSTCARD_RECT.x = (SCREEN_WIDTH - POSTCARD_WIDTH) // 2
     POSTCARD_RECT.y = y_offset
     TEXT_BOX_RECT.x = POSTCARD_RECT.x + 50
-    TEXT_BOX_RECT.y = POSTCARD_RECT.y + POSTCARD_HEIGHT + 20
+    TEXT_BOX_RECT.y = POSTCARD_RECT.y + POSTCARD_HEIGHT + 10
     DOWNLOAD_BUTTON_RECT.x = POSTCARD_RECT.x + 50
-    DOWNLOAD_BUTTON_RECT.y = TEXT_BOX_RECT.y + TEXT_BOX_RECT.height + 20
+    DOWNLOAD_BUTTON_RECT.y = TEXT_BOX_RECT.y + TEXT_BOX_RECT.height + 10
 
 # Función para generar estrellas fugaces
 def generate_stars():
