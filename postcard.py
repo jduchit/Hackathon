@@ -1,6 +1,6 @@
 import pygame
 import pygame.freetype
-from PIL import Image, ImageDraw
+from PIL import Image
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import random
@@ -28,7 +28,6 @@ LIGHTBLUE = (173, 216, 230)
 GRAY = (200, 200, 200)
 BLUE = (0, 0, 255)
 HOVER_COLOR = (100, 149, 237)
-SCROLLBAR_COLOR = (180, 180, 180)
 
 # Definir estrellas fugaces
 NUM_STARS = 100
@@ -201,29 +200,39 @@ def flip_postal():
 def download_postal():
     file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")])
     if file_path:
+        # Crear una nueva imagen con el doble de la altura para almacenar ambos lados
         img = Image.new('RGB', (POSTCARD_WIDTH, POSTCARD_HEIGHT * 2), color=WHITE)
+        
+        # Generar la imagen del lado frontal
         front_surf = pygame.Surface((POSTCARD_WIDTH, POSTCARD_HEIGHT))
         front_surf.fill(LIGHTBLUE)
         default_font.render_to(front_surf, (POSTCARD_WIDTH // 2 - 100, POSTCARD_HEIGHT // 2 - 30), "Front Side", BLACK)
         front_image = pygame.surfarray.array3d(front_surf)
-        front_image = Image.fromarray(front_image).rotate(-90, expand=True)
-        img.paste(front_image, (0, 0))
+        front_image = Image.fromarray(front_image.transpose([1, 0, 2]))  # Transponer para ajustar la orientación correcta
+        img.paste(front_image, (0, 0))  # Pegar la imagen del frente en la parte superior
 
+        # Generar la imagen del lado trasero
         back_surf = pygame.Surface((POSTCARD_WIDTH, POSTCARD_HEIGHT))
         back_surf.blit(background_image, (0, 0))
         pygame.draw.line(back_surf, BLACK, (POSTCARD_WIDTH // 2, 0), (POSTCARD_WIDTH // 2, POSTCARD_HEIGHT), 5)
+        
         left_lines = wrap_text(left_message, default_font, POSTCARD_WIDTH // 2 - 40)
         right_lines = wrap_text(user_input, custom_font, POSTCARD_WIDTH // 2 - 40)
+        
         left_start_y = 50
         for i, line in enumerate(left_lines):
             default_font.render_to(back_surf, (20, left_start_y + i * 40), line, BLACK)
+        
         right_start_y = POSTCARD_HEIGHT // 2 + 20
         for i, line in enumerate(right_lines):
             custom_font.render_to(back_surf, (POSTCARD_WIDTH // 2 + 20, right_start_y + i * 40), line, BLACK)
 
+        # Convertir el lado trasero a imagen de PIL y transponer para la orientación correcta
         back_image = pygame.surfarray.array3d(back_surf)
-        back_image = Image.fromarray(back_image).rotate(90, expand=True)
-        img.paste(back_image, (0, POSTCARD_HEIGHT))
+        back_image = Image.fromarray(back_image.transpose([1, 0, 2]))  # Transponer para corregir la orientación
+        img.paste(back_image, (0, POSTCARD_HEIGHT))  # Pegar la imagen trasera debajo de la imagen frontal
+        
+        # Guardar la imagen final
         img.save(file_path)
 
 # Función principal para la postal interactiva
