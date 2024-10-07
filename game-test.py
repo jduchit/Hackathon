@@ -287,7 +287,8 @@ while running:
                     background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
                 elif take_screenshoot_button.is_clicked(mouse_pos):
                     description, planet_name = model.getPlanet(radius_slider.value, density_slider.value, temperature_slider.value, current_language.lower())
-                    print(planet_name, description)
+                    print(planet_name)
+                    print(description)
             elif current_state == LANGUAGE_SCREEN:
                 if return_button.is_clicked(mouse_pos):
                     current_state = HOME_SCREEN
