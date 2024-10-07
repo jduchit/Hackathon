@@ -295,8 +295,6 @@ while running:
                 elif take_screenshoot_button.is_clicked(mouse_pos):
                     description, planet_name = model.getPlanet(radius_slider.value, density_slider.value, temperature_slider.value, current_language.lower())
                     planet_name = planet_name.replace(" ", "")
-                    print(planet_name)
-                    print(description)
                     current_state = POSTCARD_SCREEN
             elif current_state == LANGUAGE_SCREEN:
                 if return_button.is_clicked(mouse_pos):
@@ -399,7 +397,7 @@ while running:
         screen.blit(german_flag, (505 + dif_x, 310 + dif_y))
     
     elif current_state == POSTCARD_SCREEN:
-        postcard.postcard(description, planet_name)
+        postcard.postcard(description, planet_name, current_language)
 
     pygame.display.flip()
     # Remove clock.tick(60) here since it's already called above

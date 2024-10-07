@@ -49,13 +49,16 @@ except pygame.error as e:
 # Cargar fuentes personalizadas
 font_path = current_dir +  '\\resources\\font\\CloudyEraser.otf'
 font_path2 = current_dir +  '\\resources\\font\\JMH.ttf'
+font_path3 = current_dir +  '\\resources\\font\\NewSpace.ttf'
 try:
     custom_font = pygame.freetype.Font(font_path, 36)
     custom_font2 = pygame.freetype.Font(font_path2, 21)
+    custom_font3 = pygame.freetype.Font(font_path3, 36)
 except IOError:
     print(f"Error al cargar la fuente personalizada desde {font_path}. Usando Arial por defecto.")
     custom_font = pygame.freetype.SysFont("Arial", 36)
     custom_font2 = pygame.freetype.SysFont("Arial", 36)
+    custom_font3 = pygame.freetype.SysFont("Arial", 36)
 
 # Cargar fuente estándar
 default_font = pygame.freetype.SysFont("Arial", 36)
@@ -239,7 +242,7 @@ def flip_postal():
     postal_front = not postal_front
 
 # Función para guardar la postal
-def download_postal(information, image_path):
+def download_postal(information, image_path, language):
     file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")])
     if file_path:
         # Crear una nueva imagen con el doble de la altura para almacenar ambos lados
@@ -266,6 +269,16 @@ def download_postal(information, image_path):
         front_surf.blit(planet, (0, 0))
         front_surf.blit(user, (astronaut_x + 280, astronaut_y + 53))
         front_surf.blit(astronaut_cropped, (astronaut_x, astronaut_y))
+
+        # Render the text "Greeting from " + image_path on the upper left side
+        greetings = {
+            "English": "Greeting from ",
+            "Spanish": "Saludos desde ",
+            "French": "Salutations de ",
+            "German": "Grüße aus "
+        }
+        custom_font3.render_to(front_surf, (20, 20), greetings[language] + image_path, WHITE)
+
         front_image = pygame.surfarray.array3d(front_surf)
         front_image = Image.fromarray(front_image.transpose([1, 0, 2]))  # Transponer para ajustar la orientación correcta
         img.paste(front_image, (0, 0))  # Pegar la imagen del frente en la parte superior
@@ -298,7 +311,7 @@ def download_postal(information, image_path):
         messagebox.showinfo("Postal guardada", "La postal interactiva ha sido guardada con éxito.")
 
 # Función principal para la postal interactiva
-def postcard(left_message, image_path):
+def postcard(left_message, image_path, language):
     generate_stars()
     clock = pygame.time.Clock()
     global postal_front, text_box_active, user_input
@@ -337,7 +350,7 @@ def postcard(left_message, image_path):
                 elif TEXT_BOX_RECT.collidepoint(mouse_pos):
                     text_box_active = True
                 elif DOWNLOAD_BUTTON_RECT.collidepoint(mouse_pos):
-                    download_postal(left_message, image_path)
+                    download_postal(left_message, image_path, language)
                 else:
                     text_box_active = False
 
