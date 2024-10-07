@@ -1,11 +1,17 @@
 import pygame
+import pygame.freetype
 import math
 import os
 import cv2
 import numpy as np
+import tkinter as tk
+from tkinter import filedialog, messagebox
 import camera
+import random
 import cropface
+import postcard
 from Data import model
+from PIL import Image, ImageDraw
 
 
 # Initialize Pygame
@@ -222,6 +228,7 @@ temperature_slider = Slider(600 + dif_x, 220 + dif_y, 120, -67, 2456, 1000)
 HOME_SCREEN = 0
 GAME_SCREEN = 1
 LANGUAGE_SCREEN = 2
+POSTCARD_SCREEN = 3
 current_state = HOME_SCREEN
 
 # Scaling factors
@@ -287,8 +294,8 @@ while running:
                     background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
                 elif take_screenshoot_button.is_clicked(mouse_pos):
                     description, planet_name = model.getPlanet(radius_slider.value, density_slider.value, temperature_slider.value, current_language.lower())
-                    print(planet_name)
-                    print(description)
+                    planet_name = planet_name.replace(" ", "")
+                    current_state = POSTCARD_SCREEN
             elif current_state == LANGUAGE_SCREEN:
                 if return_button.is_clicked(mouse_pos):
                     current_state = HOME_SCREEN
@@ -388,6 +395,9 @@ while running:
         screen.blit(spanish_flag, (105 + dif_x, 310 + dif_y))
         screen.blit(french_flag, (505 + dif_x, 210 + dif_y))
         screen.blit(german_flag, (505 + dif_x, 310 + dif_y))
+    
+    elif current_state == POSTCARD_SCREEN:
+        postcard.postcard(description, planet_name, current_language)
 
     pygame.display.flip()
     # Remove clock.tick(60) here since it's already called above

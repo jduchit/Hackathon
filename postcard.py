@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import random
 import math
+import os
 
 # Inicializar pygame y tkinter
 pygame.init()
@@ -12,12 +13,14 @@ pygame.mixer.init()  # Inicializar el módulo de sonido
 root = tk.Tk()
 root.withdraw()  # Ocultar la ventana principal de tkinter
 
+current_dir = os.path.dirname(__file__)
 # Cargar el sonido flip
-flip_sound = pygame.mixer.Sound('C:/Users/Johana/Downloads/flip.wav')
+flip_sound = pygame.mixer.Sound(current_dir + '\\resources\\sounds\\flip.wav')
+
 
 # Dimensiones de la ventana y la postal
-SCREEN_WIDTH = 1100
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
 POSTCARD_WIDTH = 864
 POSTCARD_HEIGHT = 648
 
@@ -34,7 +37,7 @@ NUM_STARS = 100
 stars = []
 
 # Cargar imagen de fondo para la parte trasera de la postal
-reverse_image_path = 'C:/Users/Johana/Downloads/Reverse.png'
+reverse_image_path = current_dir +  '\\resources\\background\\Reverse.png'
 try:
     background_image = pygame.image.load(reverse_image_path)
     background_image = pygame.transform.scale(background_image, (POSTCARD_WIDTH, POSTCARD_HEIGHT))
@@ -44,15 +47,18 @@ except pygame.error as e:
     background_image.fill(WHITE)
 
 # Cargar fuentes personalizadas
-font_path = 'C:/Users/Johana/Downloads/CloudyEraser.otf'
-font_path2 = 'C:/Users/Johana/Downloads/JMH.ttf'
+font_path = current_dir +  '\\resources\\font\\CloudyEraser.otf'
+font_path2 = current_dir +  '\\resources\\font\\JMH.ttf'
+font_path3 = current_dir +  '\\resources\\font\\NewSpace.ttf'
 try:
     custom_font = pygame.freetype.Font(font_path, 36)
     custom_font2 = pygame.freetype.Font(font_path2, 21)
+    custom_font3 = pygame.freetype.Font(font_path3, 36)
 except IOError:
     print(f"Error al cargar la fuente personalizada desde {font_path}. Usando Arial por defecto.")
     custom_font = pygame.freetype.SysFont("Arial", 36)
     custom_font2 = pygame.freetype.SysFont("Arial", 36)
+    custom_font3 = pygame.freetype.SysFont("Arial", 36)
 
 # Cargar fuente estándar
 default_font = pygame.freetype.SysFont("Arial", 36)
@@ -148,13 +154,38 @@ def wrap_text(text, font, max_width):
     return lines
 
 # Función para mostrar la parte frontal de la postal
-def display_front():
+def display_front(image_path):
+    # Get the directory of the current script
+    # Draw the postcard background
     pygame.draw.rect(screen, LIGHTBLUE, POSTCARD_RECT)
+
+    # Render the text "Front Side" on the postcard
     default_font.render_to(screen, (POSTCARD_RECT.x + POSTCARD_RECT.width // 2 - 100, POSTCARD_RECT.y + POSTCARD_RECT.height // 2 - 18), "Front Side", BLACK)
 
+    # Load and transform the background image
+    background_image = pygame.image.load(current_dir + '\\resources\\planetAI\\' + image_path + '.jpg')
+    background_image = pygame.transform.scale(background_image, (POSTCARD_WIDTH, POSTCARD_HEIGHT))
+    background_image = pygame.transform.flip(background_image, True, False)
+    user = pygame.image.load(current_dir + '\\resources\\character\\cropped_face_with_transparent_bg.png')
+    astronaut = pygame.image.load(current_dir + '\\resources\\character\\astronaut.png')
+    # Scale the astronaut image to make it larger
+    user = pygame.transform.scale(user, (POSTCARD_WIDTH // 8, POSTCARD_WIDTH // 8))
+    astronaut = pygame.transform.scale(astronaut, (POSTCARD_WIDTH * 0.75, POSTCARD_WIDTH * 0.75))
+
+    astronaut_height = astronaut.get_height()
+    astronaut_cropped = astronaut.subsurface((0, 0, astronaut.get_width(), (astronaut_height // 2) - 95))
+
+    astronaut_x = POSTCARD_RECT.x + POSTCARD_RECT.width - (POSTCARD_WIDTH // 1.75)
+    astronaut_y = POSTCARD_RECT.y + POSTCARD_RECT.height - (POSTCARD_HEIGHT * 0.35)
+    # Draw the background image on the postcard
+    screen.blit(background_image, (POSTCARD_RECT.x, POSTCARD_RECT.y))
+    screen.blit(user, (astronaut_x + 280, astronaut_y + 53))
+    screen.blit(astronaut_cropped, (astronaut_x, astronaut_y))
+
 # Función para renderizar el mensaje predeterminado en el lado izquierdo de la postal
-def draw_default_left_message(surface, font, start_x, start_y, max_width):
-    default_message = "Your preset message on the left side"
+def draw_default_left_message(surface, font, start_x, start_y, max_width, default_message=None):
+    if default_message is None:
+        default_message = "Your preset message on the left side"
     lines = wrap_text(default_message, font, max_width)
     for i, line in enumerate(lines):
         font.render_to(surface, (start_x, start_y + i * 40), line, BLACK)
@@ -166,7 +197,7 @@ def draw_custom_right_message(surface, font, start_x, start_y, max_width):
         font.render_to(surface, (start_x, start_y + i * 40), line, BLACK)
 
 # Función para mostrar la parte trasera de la postal
-def display_back():
+def display_back(left_message):
     screen.blit(background_image, (POSTCARD_RECT.x, POSTCARD_RECT.y))
 
     left_area_width = POSTCARD_WIDTH // 2 - 40
@@ -176,7 +207,7 @@ def display_back():
     right_start_y = POSTCARD_RECT.y + POSTCARD_HEIGHT // 2 + 20
 
     # Llamar a la función específica para poner el mensaje predeterminado en el lado izquierdo
-    draw_default_left_message(screen, custom_font2, POSTCARD_RECT.x + 50, left_start_y, left_area_width)
+    draw_default_left_message(screen, custom_font2, POSTCARD_RECT.x + 50, left_start_y, left_area_width, left_message)
 
     # Renderizar el lado derecho (mensaje personalizado)
     draw_custom_right_message(screen, custom_font, POSTCARD_RECT.x + POSTCARD_WIDTH // 2 + 20, right_start_y, right_area_width)
@@ -197,7 +228,6 @@ def display_text_box():
         cursor_x = TEXT_BOX_RECT.x + 10 + text_width + 2
         cursor_y = TEXT_BOX_RECT.y + 15
         pygame.draw.line(screen, BLACK, (cursor_x, cursor_y), (cursor_x, cursor_y + text_surface.get_height()), 2)
-
 # Función para mostrar el botón de descarga
 def display_download_button(mouse_pos):
     button_color = HOVER_COLOR if DOWNLOAD_BUTTON_RECT.collidepoint(mouse_pos) else LIGHTBLUE
@@ -212,7 +242,7 @@ def flip_postal():
     postal_front = not postal_front
 
 # Función para guardar la postal
-def download_postal():
+def download_postal(information, image_path, language):
     file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")])
     if file_path:
         # Crear una nueva imagen con el doble de la altura para almacenar ambos lados
@@ -222,19 +252,47 @@ def download_postal():
         front_surf = pygame.Surface((POSTCARD_WIDTH, POSTCARD_HEIGHT))
         front_surf.fill(LIGHTBLUE)
         default_font.render_to(front_surf, (POSTCARD_WIDTH // 2 - 100, POSTCARD_HEIGHT // 2 - 30), "Front Side", BLACK)
+        planet = pygame.image.load(current_dir + '\\resources\\planetAI\\' + image_path + '.jpg')
+        planet = pygame.transform.scale(planet, (POSTCARD_WIDTH, POSTCARD_HEIGHT))
+        planet = pygame.transform.flip(planet, True, False)
+        user = pygame.image.load(current_dir + '\\resources\\character\\cropped_face_with_transparent_bg.png')
+        astronaut = pygame.image.load(current_dir + '\\resources\\character\\astronaut.png')
+        # Scale the astronaut image to make it larger
+        user = pygame.transform.scale(user, (POSTCARD_WIDTH // 8, POSTCARD_WIDTH // 8))
+        astronaut = pygame.transform.scale(astronaut, (POSTCARD_WIDTH * 0.75, POSTCARD_WIDTH * 0.75))
+
+        astronaut_height = astronaut.get_height()
+        astronaut_cropped = astronaut.subsurface((0, 0, astronaut.get_width(), (astronaut_height // 2) - 95))
+
+        astronaut_x = POSTCARD_RECT.x + POSTCARD_RECT.width - (POSTCARD_WIDTH // 1.25)
+        astronaut_y = POSTCARD_RECT.y + POSTCARD_RECT.height - (POSTCARD_HEIGHT * 0.25)
+        front_surf.blit(planet, (0, 0))
+        front_surf.blit(user, (astronaut_x + 280, astronaut_y + 53))
+        front_surf.blit(astronaut_cropped, (astronaut_x, astronaut_y))
+
+        # Render the text "Greeting from " + image_path on the upper left side
+        greetings = {
+            "English": "Greeting from ",
+            "Spanish": "Saludos desde ",
+            "French": "Salutations de ",
+            "German": "Grüße aus "
+        }
+        custom_font3.render_to(front_surf, (20, 20), greetings[language] + image_path, WHITE)
+
         front_image = pygame.surfarray.array3d(front_surf)
         front_image = Image.fromarray(front_image.transpose([1, 0, 2]))  # Transponer para ajustar la orientación correcta
         img.paste(front_image, (0, 0))  # Pegar la imagen del frente en la parte superior
-
+        # Load and transform the background image
         # Generar la imagen del lado trasero
         back_surf = pygame.Surface((POSTCARD_WIDTH, POSTCARD_HEIGHT))
         back_surf.blit(background_image, (0, 0))
         
+        
         # Lado izquierdo: Usar la misma fuente y renderizado que en la vista interactiva, con ajustes de altura
-        left_lines = wrap_text(left_message, custom_font2, POSTCARD_WIDTH // 2 - 40)
+        left_lines = wrap_text(information, custom_font2, POSTCARD_WIDTH // 2 - 40)
         right_lines = wrap_text(user_input, custom_font, POSTCARD_WIDTH // 2 - 40)
         
-        left_start_y = POSTCARD_RECT.y + 50  # Ajusta la altura para que coincida
+        left_start_y = POSTCARD_RECT.y + 90  # Ajusta la altura para que coincida
         for i, line in enumerate(left_lines):
             custom_font2.render_to(back_surf, (50, left_start_y + i * 40), line, BLACK)
         
@@ -253,7 +311,7 @@ def download_postal():
         messagebox.showinfo("Postal guardada", "La postal interactiva ha sido guardada con éxito.")
 
 # Función principal para la postal interactiva
-def postcard():
+def postcard(left_message, image_path, language):
     generate_stars()
     clock = pygame.time.Clock()
     global postal_front, text_box_active, user_input
@@ -275,9 +333,9 @@ def postcard():
 
         center_elements()
         if postal_front:
-            display_front()
+            display_front(image_path)
         else:
-            display_back()
+            display_back(left_message)
 
         display_text_box()
         display_download_button(mouse_pos)
@@ -292,7 +350,7 @@ def postcard():
                 elif TEXT_BOX_RECT.collidepoint(mouse_pos):
                     text_box_active = True
                 elif DOWNLOAD_BUTTON_RECT.collidepoint(mouse_pos):
-                    download_postal()
+                    download_postal(left_message, image_path, language)
                 else:
                     text_box_active = False
 
@@ -312,7 +370,4 @@ def postcard():
 
         pygame.display.flip()
 
-    pygame.quit()
-
-# Llamar la función principal para iniciar la postal interactiva
-postcard()
+    pygame.quit() # Salir de pygame
