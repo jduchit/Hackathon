@@ -16,14 +16,16 @@ a = Analysis(
         ('resources/flags/Flag_of_Japan-128x85.png', 'resources/flags'),
         ('resources/character/astronaut.png', 'resources/character'),
         ('resources/character/cropped_face_with_transparent_bg.png', 'resources/character'),
-        ('resources/planetAI', 'resources/planetAI'),  # Include all planet images
-        ('Data', 'Data'),  # Include the entire Data directory
+        ('resources/planetAI', 'resources/planetAI'),
+        ('Data/model.py', 'Data'),
+        ('Data/planets_with_multilingual_descriptions.csv', 'Data')  # Add this line
     ],
     hiddenimports=[
         'pygame',
         'cv2',
         'numpy',
-        'camera',  # Your custom modules
+        'pandas',  # Add this if not already present
+        'camera',
         'cropface',
         'Data.model'
     ],
@@ -53,6 +55,6 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,  # Set to True for debugging, change to False for release
-    icon=None  # Add path to icon if you have one
+    console=True,
+    icon=None
 )

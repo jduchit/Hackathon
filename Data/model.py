@@ -1,8 +1,22 @@
 import random
 import pandas as pd
 import pickle
+import os
+import sys
 
-df = pd.read_csv('Data/planets_with_multilingual_descriptions.csv')
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+csv_path = resource_path('Data/planets_with_multilingual_descriptions.csv')
+
+df = pd.read_csv(csv_path)
+
 df_sample = df[df['Planet'].isin(['TOI-2406 b', 'Qatar-5 b', 'HD 191939 b', 'Kepler-1654 b', 'LTT 1445 A c', 'PH2 b', 'WASP-18 b', 'GPX-1 b', 'NGTS-15 b', 'XO-7 b', 'K2-216 b', 'HAT-P-61 b', 'HATS-70 b', 'KELT-24 b', 'Qatar-4 b'])]
 
 with open('Data/knn_model.pkl', 'rb') as f:
