@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import random
 import math
+import os
 
 # Inicializar pygame y tkinter
 pygame.init()
@@ -149,12 +150,18 @@ def wrap_text(text, font, max_width):
 
 # Función para mostrar la parte frontal de la postal
 def display_front():
+    # Get the directory of the current script
+    current_dir = os.path.dirname(__file__)
     pygame.draw.rect(screen, LIGHTBLUE, POSTCARD_RECT)
     default_font.render_to(screen, (POSTCARD_RECT.x + POSTCARD_RECT.width // 2 - 100, POSTCARD_RECT.y + POSTCARD_RECT.height // 2 - 18), "Front Side", BLACK)
+    background_image = pygame.image.load(current_dir + '/resources/background/imagen.jpeg')
+    background_image = pygame.transform.scale(background_image, (POSTCARD_WIDTH, POSTCARD_HEIGHT))
+    background_image = pygame.transform.flip(background_image, True, False)
 
 # Función para renderizar el mensaje predeterminado en el lado izquierdo de la postal
-def draw_default_left_message(surface, font, start_x, start_y, max_width):
-    default_message = "Your preset message on the left side"
+def draw_default_left_message(surface, font, start_x, start_y, max_width, default_message=None):
+    if default_message is None:
+        default_message = "Your preset message on the left side"
     lines = wrap_text(default_message, font, max_width)
     for i, line in enumerate(lines):
         font.render_to(surface, (start_x, start_y + i * 40), line, BLACK)
@@ -176,7 +183,7 @@ def display_back():
     right_start_y = POSTCARD_RECT.y + POSTCARD_HEIGHT // 2 + 20
 
     # Llamar a la función específica para poner el mensaje predeterminado en el lado izquierdo
-    draw_default_left_message(screen, custom_font2, POSTCARD_RECT.x + 50, left_start_y, left_area_width)
+    draw_default_left_message(screen, custom_font2, POSTCARD_RECT.x + 50, left_start_y, left_area_width, left_message)
 
     # Renderizar el lado derecho (mensaje personalizado)
     draw_custom_right_message(screen, custom_font, POSTCARD_RECT.x + POSTCARD_WIDTH // 2 + 20, right_start_y, right_area_width)
@@ -253,7 +260,7 @@ def download_postal():
         messagebox.showinfo("Postal guardada", "La postal interactiva ha sido guardada con éxito.")
 
 # Función principal para la postal interactiva
-def postcard():
+def postcard(left_message):
     generate_stars()
     clock = pygame.time.Clock()
     global postal_front, text_box_active, user_input
@@ -277,7 +284,7 @@ def postcard():
         if postal_front:
             display_front()
         else:
-            display_back()
+            display_back(left_message)
 
         display_text_box()
         display_download_button(mouse_pos)
