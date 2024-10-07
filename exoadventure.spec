@@ -15,6 +15,16 @@ a = Analysis(
         ('resources/flags/Flag_of_Germany-128x77.png', 'resources/flags'),
         ('resources/flags/Flag_of_India-128x85.png', 'resources/flags'),
         ('resources/flags/Flag_of_Japan-128x85.png', 'resources/flags'),
+        # Include the image resources
+        ('resources/background/*.png', 'resources/background'),
+        ('resources/planetAI/*.jpg', 'resources/planetAI'),
+        
+        # Include the fonts
+        ('resources/font/*.otf', 'resources/font'),
+        ('resources/font/*.ttf', 'resources/font'),
+
+        # Include the sound files
+        ('resources/sounds/*.wav', 'resources/sounds'),
         ('resources/character/astronaut.png', 'resources/character'),
         ('resources/character/cropped_face_with_transparent_bg.png', 'resources/character'),
         ('resources/planetAI', 'resources/planetAI'),

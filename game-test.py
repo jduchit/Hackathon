@@ -306,7 +306,7 @@ while running:
                     print(radius_slider.value, density_slider.value, temperature_slider.value)
                     description, planet_name = model.getPlanet(radius_slider.value, density_slider.value, temperature_slider.value, current_language.lower())
                     planet_name = planet_name.replace(" ", "")
-                    background_image = pygame.image.load(current_dir + f'\\resources\\planetAI\\{planet_name}.jpg')
+                    background_image = pygame.image.load(current_dir + f'/resources/planetAI/{planet_name}.jpg')
                     background_image = pygame.transform.scale(background_image, (screen_width, screen_height))
                 elif take_screenshoot_button.is_clicked(mouse_pos):
                     description, planet_name = model.getPlanet(radius_slider.value, density_slider.value, temperature_slider.value, current_language.lower())

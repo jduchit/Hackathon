@@ -6,6 +6,22 @@ from tkinter import filedialog, messagebox
 import random
 import math
 import os
+import sys
+
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+        print(f"Using PyInstaller base path: {base_path}")
+    except Exception:
+        base_path = os.path.abspath(".")
+        print(f"Using default base path: {base_path}")
+
+    full_path = os.path.join(base_path, relative_path)
+    print(f"Attempting to load CSV from: {full_path}")
+    return full_path
 
 # Inicializar pygame y tkinter
 pygame.init()
@@ -15,7 +31,7 @@ root.withdraw()  # Ocultar la ventana principal de tkinter
 
 current_dir = os.path.dirname(__file__)
 # Cargar el sonido flip
-flip_sound = pygame.mixer.Sound(current_dir + '\\resources\\sounds\\flip.wav')
+flip_sound = pygame.mixer.Sound(current_dir + '/resources/sounds/flip.wav')
 
 
 # Dimensiones de la ventana y la postal
@@ -37,7 +53,7 @@ NUM_STARS = 100
 stars = []
 
 # Cargar imagen de fondo para la parte trasera de la postal
-reverse_image_path = current_dir +  '\\resources\\background\\Reverse.png'
+reverse_image_path = current_dir +  '/resources/background/Reverse.png'
 try:
     background_image = pygame.image.load(reverse_image_path)
     background_image = pygame.transform.scale(background_image, (POSTCARD_WIDTH, POSTCARD_HEIGHT))
@@ -47,9 +63,9 @@ except pygame.error as e:
     background_image.fill(WHITE)
 
 # Cargar fuentes personalizadas
-font_path = current_dir +  '\\resources\\font\\CloudyEraser.otf'
-font_path2 = current_dir +  '\\resources\\font\\JMH.ttf'
-font_path3 = current_dir +  '\\resources\\font\\NewSpace.ttf'
+font_path = current_dir +  '/resources/font/CloudyEraser.otf'
+font_path2 = current_dir +  '/resources/font/JMH.ttf'
+font_path3 = current_dir +  '/resources/font/NewSpace.ttf'
 try:
     custom_font = pygame.freetype.Font(font_path, 36)
     custom_font2 = pygame.freetype.Font(font_path2, 21)
@@ -163,11 +179,11 @@ def display_front(image_path):
     default_font.render_to(screen, (POSTCARD_RECT.x + POSTCARD_RECT.width // 2 - 100, POSTCARD_RECT.y + POSTCARD_RECT.height // 2 - 18), "Front Side", BLACK)
 
     # Load and transform the background image
-    background_image = pygame.image.load(current_dir + '\\resources\\planetAI\\' + image_path + '.jpg')
+    background_image = pygame.image.load(current_dir + '/resources/planetAI/' + image_path + '.jpg')
     background_image = pygame.transform.scale(background_image, (POSTCARD_WIDTH, POSTCARD_HEIGHT))
     background_image = pygame.transform.flip(background_image, True, False)
-    user = pygame.image.load(current_dir + '\\resources\\character\\cropped_face_with_transparent_bg.png')
-    astronaut = pygame.image.load(current_dir + '\\resources\\character\\astronaut.png')
+    user = pygame.image.load(current_dir + '/resources/character/cropped_face_with_transparent_bg.png')
+    astronaut = pygame.image.load(current_dir + '/resources/character/astronaut.png')
     # Scale the astronaut image to make it larger
     user = pygame.transform.scale(user, (POSTCARD_WIDTH // 8, POSTCARD_WIDTH // 8))
     astronaut = pygame.transform.scale(astronaut, (POSTCARD_WIDTH * 0.75, POSTCARD_WIDTH * 0.75))
@@ -252,11 +268,11 @@ def download_postal(information, image_path, language):
         front_surf = pygame.Surface((POSTCARD_WIDTH, POSTCARD_HEIGHT))
         front_surf.fill(LIGHTBLUE)
         default_font.render_to(front_surf, (POSTCARD_WIDTH // 2 - 100, POSTCARD_HEIGHT // 2 - 30), "Front Side", BLACK)
-        planet = pygame.image.load(current_dir + '\\resources\\planetAI\\' + image_path + '.jpg')
+        planet = pygame.image.load(current_dir + '/resources/planetAI/' + image_path + '.jpg')
         planet = pygame.transform.scale(planet, (POSTCARD_WIDTH, POSTCARD_HEIGHT))
         planet = pygame.transform.flip(planet, True, False)
-        user = pygame.image.load(current_dir + '\\resources\\character\\cropped_face_with_transparent_bg.png')
-        astronaut = pygame.image.load(current_dir + '\\resources\\character\\astronaut.png')
+        user = pygame.image.load(current_dir + '/resources/character/cropped_face_with_transparent_bg.png')
+        astronaut = pygame.image.load(current_dir + '/resources/character/astronaut.png')
         # Scale the astronaut image to make it larger
         user = pygame.transform.scale(user, (POSTCARD_WIDTH // 8, POSTCARD_WIDTH // 8))
         astronaut = pygame.transform.scale(astronaut, (POSTCARD_WIDTH * 0.75, POSTCARD_WIDTH * 0.75))
