@@ -158,14 +158,30 @@ def capture_new_face_image():
     cropface.cropface()
     return True
 
-# Load or capture face image
 def load_face_image():
-    if not os.path.exists(current_dir + '/resources/character/cropped_face_with_transparent_bg.png'):
+    # Updated directory path
+    save_dir = os.path.expanduser('~/.exoadventure')
+    image_path = os.path.join(save_dir, 'cropped_face_with_transparent_bg.png')
+
+    if not os.path.exists(image_path):
         print("Face image not found. Capturing new image...")
         if not capture_new_face_image():
             print("Failed to capture new image. Using default.")
             return None
-    return current_dir + '/resources/character/cropped_face_with_transparent_bg.png'
+    return image_path
+
+
+# Add these functions outside the main game loop
+def format_jump_height(height_meters):
+    if height_meters < 1000:
+        return f"{height_meters:.1f} m"
+    else:
+        return f"{height_meters/1000:.1f} km"
+
+def update_jump_message(height_meters):
+    return f"Jump height: {format_jump_height(height_meters)}"
+
+
 
 # Load face image
 face_image = pygame.image.load(load_face_image())
@@ -330,15 +346,22 @@ while running:
         # Calculate gravity
         gravedad = -(4 / 3) * math.pi * G * density * radius  # Negative because gravity pulls downward
 
+
         # Game logic
         if is_jumping:
             y_velocity += gravedad * dt
             y_position_meters += y_velocity * dt
+            
+            # Update jump message while in air
+            jump_message = update_jump_message(y_position_meters)
 
             if y_position_meters <= 0:
                 y_position_meters = 0
                 is_jumping = False
                 y_velocity = 0
+                jump_message = "Ready to jump!"
+        else:
+            jump_message = "Press SPACE to jump!"
 
         # Create temperature overlay
         temperature_overlay = create_temperature_overlay(temperature_slider.value, temperature_slider.min_value, temperature_slider.max_value)
@@ -368,11 +391,11 @@ while running:
         screen.blit(density_text, (625 + dif_x, 160 + dif_y))
         screen.blit(temperature_text, (625 + dif_x, 240 + dif_y))
 
-        # Display jump message
-        if jump_message:
-            font = pygame.font.Font(None, 24)
+        # Display jump message - position it at bottom left
+        if (len(jump_message) > 0):
+            font = pygame.font.Font(None, 36)  # Increased font size for better visibility
             message_surface = font.render(jump_message, True, WHITE)
-            message_rect = message_surface.get_rect(center=(screen_width // 2, 100))
+            message_rect = message_surface.get_rect(bottomleft=(20 + dif_x, screen_height - 20))
             screen.blit(message_surface, message_rect)
 
         # Draw return button

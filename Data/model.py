@@ -1,14 +1,78 @@
 import random
 import pandas as pd
 import pickle
+import os
+import sys
 
-df = pd.read_csv('Data/planets_with_multilingual_descriptions.csv')
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+        print(f"Using PyInstaller base path: {base_path}")
+    except Exception:
+        base_path = os.path.abspath(".")
+        print(f"Using default base path: {base_path}")
+
+    full_path = os.path.join(base_path, relative_path)
+    print(f"Attempting to load CSV from: {full_path}")
+    return full_path
+
+# List all files in the Data directory (debugging)
+def list_data_files():
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    
+    data_path = os.path.join(base_path, 'Data')
+    print(f"Checking Data directory: {data_path}")
+    if os.path.exists(data_path):
+        print("Files in Data directory:")
+        for file in os.listdir(data_path):
+            print(f"  - {file}")
+    else:
+        print("Data directory not found!")
+
+# Call this before trying to load the CSV
+list_data_files()
+
+# Use this function when loading the CSV file
+csv_path = resource_path('Data/planets_with_multilingual_descriptions.csv')
+try:
+    df = pd.read_csv(csv_path)
+    print(f"Successfully loaded CSV with {len(df)} rows")
+except Exception as e:
+    print(f"Error loading CSV: {str(e)}")
+    sys.exit(1)
+
 df_sample = df[df['Planet'].isin(['TOI-2406 b', 'Qatar-5 b', 'HD 191939 b', 'Kepler-1654 b', 'LTT 1445 A c', 'PH2 b', 'WASP-18 b', 'GPX-1 b', 'NGTS-15 b', 'XO-7 b', 'K2-216 b', 'HAT-P-61 b', 'HATS-70 b', 'KELT-24 b', 'Qatar-4 b'])]
 
-with open('Data/knn_model.pkl', 'rb') as f:
-    knn_model = pickle.load(f)
-with open('Data/scaler.pkl', 'rb') as f:
-    scaler = pickle.load(f)
+
+
+# Load pickle file
+model_path = resource_path('Data/knn_model.pkl')
+try:
+    with open(model_path, 'rb') as f:
+        knn_model = pickle.load(f)
+    print("Successfully loaded KNN model")
+except Exception as e:
+    print(f"Error loading KNN model: {str(e)}")
+    sys.exit(1)
+
+# Load pickle file
+scaler_path = resource_path('Data/scaler.pkl')
+try:
+    with open(scaler_path, 'rb') as f:
+        scaler = pickle.load(f)
+    print("Successfully loaded scaler")
+except Exception as e:
+    print(f"Error loading scaler: {str(e)}")
+    sys.exit(1)
+
+
+
 
 def getPlanet(radious, density, temp, language):
 
