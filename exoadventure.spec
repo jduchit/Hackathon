@@ -17,14 +17,13 @@ a = Analysis(
         ('resources/character/astronaut.png', 'resources/character'),
         ('resources/character/cropped_face_with_transparent_bg.png', 'resources/character'),
         ('resources/planetAI', 'resources/planetAI'),
-        ('Data/model.py', 'Data'),
-        ('Data/planets_with_multilingual_descriptions.csv', 'Data')  # Add this line
+        ('Data/*.csv', 'Data'),  # This will include all CSV files in the Data directory
     ],
     hiddenimports=[
         'pygame',
         'cv2',
         'numpy',
-        'pandas',  # Add this if not already present
+        'pandas',
         'camera',
         'cropface',
         'Data.model'
@@ -55,6 +54,6 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,
+    console=True,  # Keep True for debugging
     icon=None
 )
