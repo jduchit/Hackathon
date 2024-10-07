@@ -42,14 +42,14 @@ def getPlanet(radious, density, temp, language):
             break
 
     # Select a random planet from the filtered list
-    random_idx = random.choice(filtered_indices)
-    random_distance = filtered_distances[filtered_indices.index(random_idx)]
+    index = filtered_indices[0]
+    distance = filtered_distances[filtered_indices.index(index)]
 
     # Display the random closest planet
     print("\nRandom Closest Planet from df_sample:")
-    print(f"Planet: {df.iloc[random_idx]['Planet']}")
-    print(f"Distance: {random_distance:.2f}")
-    print(f"Information: {df.iloc[random_idx]['Information']}\n")
-    print(f"Description: {df.iloc[random_idx][f'description_{language}']}\n")
+    print(f"Planet: {df.iloc[index]['Planet']}")
+    print(f"Distance: {distance:.2f}")
+    print(f"Information: {df.iloc[index]['Information']}\n")
+    print(f"Description: {df.iloc[index][f'description_{language}']}\n")
     
-    return df.iloc[random_idx]['Planet']
+    return df.iloc[index][f'description_{language}'], df.iloc[index]['Planet']
