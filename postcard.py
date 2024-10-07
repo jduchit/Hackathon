@@ -319,7 +319,7 @@ def postcard(left_message):
 
         pygame.display.flip()
 
-    pygame.quit()
+    pygame.quit() # Salir de pygame
 
 # Llamar la función principal para iniciar la postal interactiva
 postcard()
