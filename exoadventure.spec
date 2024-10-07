@@ -1,5 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import cv2
 block_cipher = None
 
 a = Analysis(
@@ -19,6 +20,7 @@ a = Analysis(
         ('resources/planetAI', 'resources/planetAI'),
         ('Data/*.csv', 'Data'),  # Include all CSV files
         ('Data/*.pkl', 'Data'),  # Include all pickle files
+        (cv2.data.haarcascades + 'haarcascade_frontalface_default.xml', 'cv2/data'),  # Include the Haar cascade file
     ],
     hiddenimports=[
         'pygame',
