@@ -49,10 +49,30 @@ except Exception as e:
 
 df_sample = df[df['Planet'].isin(['TOI-2406 b', 'Qatar-5 b', 'HD 191939 b', 'Kepler-1654 b', 'LTT 1445 A c', 'PH2 b', 'WASP-18 b', 'GPX-1 b', 'NGTS-15 b', 'XO-7 b', 'K2-216 b', 'HAT-P-61 b', 'HATS-70 b', 'KELT-24 b', 'Qatar-4 b'])]
 
-with open('Data/knn_model.pkl', 'rb') as f:
-    knn_model = pickle.load(f)
-with open('Data/scaler.pkl', 'rb') as f:
-    scaler = pickle.load(f)
+
+
+# Load pickle file
+model_path = resource_path('Data/knn_model.pkl')
+try:
+    with open(model_path, 'rb') as f:
+        knn_model = pickle.load(f)
+    print("Successfully loaded KNN model")
+except Exception as e:
+    print(f"Error loading KNN model: {str(e)}")
+    sys.exit(1)
+
+# Load pickle file
+scaler_path = resource_path('Data/scaler.pkl')
+try:
+    with open(scaler_path, 'rb') as f:
+        scaler = pickle.load(f)
+    print("Successfully loaded scaler")
+except Exception as e:
+    print(f"Error loading scaler: {str(e)}")
+    sys.exit(1)
+
+
+
 
 def getPlanet(radious, density, temp, language):
 

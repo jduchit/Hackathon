@@ -17,13 +17,15 @@ a = Analysis(
         ('resources/character/astronaut.png', 'resources/character'),
         ('resources/character/cropped_face_with_transparent_bg.png', 'resources/character'),
         ('resources/planetAI', 'resources/planetAI'),
-        ('Data/*.csv', 'Data'),  # This will include all CSV files in the Data directory
+        ('Data/*.csv', 'Data'),  # Include all CSV files
+        ('Data/*.pkl', 'Data'),  # Include all pickle files
     ],
     hiddenimports=[
         'pygame',
         'cv2',
         'numpy',
         'pandas',
+        'sklearn',  # Add this if you're using scikit-learn
         'camera',
         'cropface',
         'Data.model'
@@ -54,6 +56,6 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,  # Keep True for debugging
+    console=True,
     icon=None
 )
