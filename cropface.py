@@ -40,6 +40,11 @@ def cropface():
                 else:
                     new_data.append(item)
             
-            pil_image.putdata(new_data)
-            pil_image.save('resources/character/cropped_face_with_transparent_bg.png')
-            print("Face cropped and saved with transparent background!")
+            # Directory to save cropped images
+            save_dir = os.path.expanduser('~/.exoadventure')  # Change this to a writable directory
+            os.makedirs(save_dir, exist_ok=True)  # Create directory if it doesn't exist
+
+            # Save image in the new directory
+            save_path = os.path.join(save_dir, 'cropped_face_with_transparent_bg.png')
+            pil_image.save(save_path)
+            print(f"Face cropped and saved with transparent background at {save_path}!")
